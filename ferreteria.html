@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiconstrucciones Río Santa S.A.C. - Tienda Completa de Ferretería, Baños, Muebles e Iluminación</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f5f7;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        /* ===================================================
+           1. PANTALLA DE LOGIN CON ANIMACIÓN (ESTADO INICIAL)
+           =================================================== */
+        #login-screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .stage {
+            position: relative;
+            width: 950px;
+            height: 550px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+
+        .builder-container {
+            position: absolute;
+            left: -180px;
+            bottom: 120px;
+            width: 140px;
+            height: 260px;
+            z-index: 10;
+            animation: walkInAndOut 8s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
+        }
+
+        @keyframes walkInAndOut {
+            0%   { left: -180px; transform: scaleX(1); opacity: 1; }
+            37.5% { left: 140px;  transform: scaleX(1); opacity: 1; }  
+            72.5% { left: 140px;  transform: scaleX(1); opacity: 1; }  
+            73%  { left: 140px;  transform: scaleX(-1); opacity: 1; }  
+            100% { left: -260px; transform: scaleX(-1); opacity: 0; }  
+        }
+
+        .helmet {
+            position: absolute; top: 0; left: 30px; width: 70px; height: 38px;
+            background: linear-gradient(135deg, #fbbf24, #d97706);
+            border-radius: 40px 40px 10px 10px; box-shadow: inset -3px -3px 6px rgba(0,0,0,0.3); z-index: 5;
+        }
+        .helmet-visor { position: absolute; bottom: -4px; left: -8px; width: 86px; height: 8px; background: #b45309; border-radius: 4px; }
+        .head { position: absolute; top: 32px; left: 42px; width: 46px; height: 48px; background: #fdba74; border-radius: 20px; }
+        .torso {
+            position: absolute; top: 75px; left: 35px; width: 60px; height: 85px;
+            background: linear-gradient(135deg, #f97316, #ea580c); border-radius: 12px; z-index: 3;
+        }
+        .stripe-v1, .stripe-v2 { position: absolute; top: 0; width: 10px; height: 100%; background: #f8fafc; }
+        .stripe-v1 { left: 12px; } .stripe-v2 { right: 12px; }
+        .arm-left { position: absolute; top: 80px; left: 18px; width: 18px; height: 70px; background: #c2410c; border-radius: 10px; transform-origin: top center; animation: armSwing 0.6s infinite alternate ease-in-out; }
+        .arm-right {
+            position: absolute; top: 80px; right: 18px; width: 18px; height: 70px; background: #ea580c; border-radius: 10px; transform-origin: top center; z-index: 4;
+            animation: armRightSequence 8s ease-in-out forwards;
+        }
+        @keyframes armRightSequence {
+            0% { transform: rotate(0deg); } 33.75% { transform: rotate(0deg); }
+            43.75% { transform: rotate(-65deg) translateY(-10px); } 60% { transform: rotate(-65deg) translateY(-10px); }
+            65% { transform: rotate(0deg); } 68.75% { transform: rotate(-130deg); } 71.25% { transform: rotate(-95deg); }
+            73.75% { transform: rotate(-130deg); } 76.25% { transform: rotate(-95deg); } 78.75% { transform: rotate(0deg); }
+            85% { transform: rotate(-20deg); } 92.5% { transform: rotate(20deg); } 100% { transform: rotate(-20deg); }
+        }
+        .leg-left, .leg-right { position: absolute; top: 155px; width: 22px; height: 85px; background: #1e293b; border-radius: 8px; transform-origin: top center; }
+        .leg-left { left: 40px; animation: legSwing 0.6s infinite alternate ease-in-out; }
+        .leg-right { left: 68px; background: #334155; animation: legSwing 0.6s infinite alternate-reverse ease-in-out; }
+        .boot { position: absolute; bottom: 0; left: -4px; width: 32px; height: 16px; background: #78350f; border-radius: 4px 8px 2px 2px; }
+        @keyframes legSwing { from { transform: rotate(-22deg); } to { transform: rotate(22deg); } }
+        @keyframes armSwing { from { transform: rotate(20deg); } to { transform: rotate(-20deg); } }
+
+        .folder-panel {
+            position: absolute; left: 360px; width: 180px; height: 240px;
+            background: rgba(37, 99, 235, 0.08); border: 2px solid rgba(37, 99, 235, 0.6);
+            border-radius: 0 16px 16px 16px; backdrop-filter: blur(12px); z-index: 6;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            animation: folderOpen 0.8s 3.3s forwards ease-in-out;
+        }
+        .folder-tab {
+            position: absolute; top: -24px; left: -2px; width: 85px; height: 24px;
+            background: rgba(37, 99, 235, 0.3); border: 2px solid rgba(37, 99, 235, 0.6); border-bottom: none;
+            border-radius: 8px 8px 0 0; color: #eff6ff; font-size: 0.65rem; font-weight: bold; display: flex; align-items: center; justify-content: center;
+        }
+        .touch-point { width: 50px; height: 50px; border-radius: 50%; background: rgba(37, 99, 235, 0.2); border: 2px dashed #2563eb; position: relative; }
+        .touch-point::after {
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; background: #2563eb; opacity: 0;
+            animation: lightGlow 0.8s 3.2s forwards ease-out;
+        }
+        @keyframes lightGlow { 0% { width: 10px; height: 10px; opacity: 1; } 50% { width: 300px; height: 300px; opacity: 0.8; filter: blur(10px); } 100% { width: 500px; height: 500px; opacity: 0; } }
+        @keyframes folderOpen { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1) rotateY(20deg); opacity: 0.5; } 100% { transform: scale(0); opacity: 0; } }
+
+        .login-card {
+            position: absolute; right: 60px; background: #ffffff; padding: 2.2rem; width: 100%; max-width: 380px;
+            border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border-top: 6px solid #f97316;
+            opacity: 0; transform: scale(0.8) translateX(40px);
+            animation: showLogin 0.8s 3.8s forwards cubic-bezier(0.34, 1.56, 0.64, 1), centerLogin 1.7s 6.3s forwards ease-in-out;
+            z-index: 20;
+        }
+        @keyframes showLogin { to { opacity: 1; transform: scale(1) translateX(0); } }
+        @keyframes centerLogin { from { right: 60px; } to { right: 285px; } }
+
+        .login-header { text-align: center; margin-bottom: 1.5rem; }
+        .login-header h1 { color: #0f172a; font-size: 1.3rem; text-transform: uppercase; }
+        .login-header p { color: #64748b; font-size: 0.75rem; margin-top: 4px; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.3rem; color: #334155; font-size: 0.8rem; font-weight: 600; }
+        .form-group input { width: 100%; padding: 0.65rem; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem; outline: none; }
+        .form-group input:focus { border-color: #f97316; }
+        .btn-submit { width: 100%; padding: 0.75rem; background-color: #f97316; color: #ffffff; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        .btn-submit:hover { background-color: #ea580c; }
+        .footer-links { margin-top: 1rem; display: flex; justify-content: space-between; font-size: 0.75rem; }
+        .footer-links a { color: #f97316; text-decoration: none; font-weight: 600; cursor: pointer; }
+        .footer-links a:hover { text-decoration: underline; }
+        .hammer-icon { position: absolute; left: 220px; top: 230px; font-size: 2.6rem; opacity: 0; z-index: 25; animation: hammerAppear 0.6s 6.9s forwards, hammerWiggle 1.1s 7.5s infinite ease-in-out; }
+        @keyframes hammerAppear { to { opacity: 1; } }
+        @keyframes hammerWiggle { 0%, 100% { transform: rotate(-18deg); } 50% { transform: rotate(18deg); } }
+
+        .cement-rain { position: absolute; inset: 0; pointer-events: none; z-index: 22; }
+        .brick { position: absolute; top: -60px; font-size: 1.7rem; opacity: 0; animation-name: fallDown; animation-timing-function: linear; animation-iteration-count: infinite; }
+        @keyframes fallDown { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } 100% { transform: translateY(620px) rotate(50deg); opacity: 0; } }
+
+
+        /* ===================================================
+           2. APLICACIÓN PRINCIPAL (ESTILO RETAIL / PROMART)
+           =================================================== */
+        #app-screen {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f4f5f7;
+        }
+
+        .top-navbar-main {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.6rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-logo h1 {
+            color: #f97316;
+            font-size: 1.35rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+
+        .search-bar-container {
+            flex: 1;
+            max-width: 480px;
+            margin: 0 2rem;
+            position: relative;
+        }
+        .search-bar-container input {
+            width: 100%;
+            padding: 0.55rem 1rem 0.55rem 2.4rem;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            outline: none;
+            background-color: #f8fafc;
+        }
+        .search-bar-container input:focus { border-color: #f97316; background-color: #fff; }
+        .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            font-size: 0.85rem;
+        }
+        .nav-link-top {
+            color: #475569;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .nav-link-top:hover { color: #f97316; }
+        .location-selector {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #334155;
+            cursor: pointer;
+            font-weight: 600;
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .user-account-btn {
+            background: #f97316;
+            color: #fff;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .featured-banner-wrapper {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1350px;
+            margin: 0.8rem auto 0 auto;
+            border-radius: 10px;
+            width: 96%;
+        }
+        .featured-banner-tag {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            text-align: center;
+        }
+        .featured-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        .featured-banner-info h4 { font-size: 1rem; color: #0f172a; font-weight: 700; }
+        .featured-banner-info p { font-size: 0.85rem; color: #0284c7; font-weight: bold; margin-top: 2px; }
+
+        .store-container {
+            max-width: 1350px;
+            margin: 1rem auto;
+            padding: 0 1rem;
+            width: 100%;
+        }
+
+        .category-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 0.8rem;
+        }
+
+        .quick-categories {
+            display: flex;
+            gap: 0.8rem;
+            overflow-x: auto;
+            padding-bottom: 0.8rem;
+            margin-bottom: 1rem;
+            scrollbar-width: thin;
+        }
+        .q-cat-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 0.8rem;
+            min-width: 115px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .q-cat-card:hover, .q-cat-card.active {
+            border-color: #f97316;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.12);
+            transform: translateY(-2px);
+        }
+        .q-cat-icon { font-size: 1.6rem; margin-bottom: 4px; }
+        .q-cat-name { font-size: 0.72rem; font-weight: 700; color: #334155; }
+
+        .explore-styles-section {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .explore-styles-section h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.8rem;
+        }
+        .styles-grid-row {
+            display: flex;
+            gap: 1.2rem;
+            overflow-x: auto;
+        }
+        .style-item-card {
+            text-align: center;
+            cursor: pointer;
+            min-width: 95px;
+        }
+        .style-circle-img {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            margin: 0 auto 6px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .style-item-card:hover .style-circle-img { border-color: #f97316; }
+        .style-item-card span { font-size: 0.72rem; font-weight: 600; color: #475569; }
+
+        .main-shop-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr 310px;
+            gap: 1.2rem;
+        }
+        @media (max-width: 1100px) {
+            .main-shop-layout { grid-template-columns: 230px 1fr; }
+            .cart-panel-sidebar { grid-column: 1 / -1; }
+        }
+        @media (max-width: 768px) {
+            .main-shop-layout { grid-template-columns: 1fr; }
+            .sidebar-filters { display: none; }
+        }
+
+        .sidebar-filters {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            height: fit-content;
+        }
+        .sidebar-filters h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: #0f172a;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 0.4rem;
+        }
+        .filter-group { margin-bottom: 1rem; }
+        .filter-group h4 {
+            font-size: 0.8rem;
+            color: #475569;
+            margin-bottom: 0.4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .filter-list { list-style: none; font-size: 0.78rem; }
+        .filter-list li {
+            padding: 0.25rem 0;
+            color: #64748b;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .filter-list li:hover { color: #f97316; font-weight: 600; }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.9rem;
+        }
+
+        .product-card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 0.9rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: box-shadow 0.2s;
+        }
+        .product-card:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+
+        .badge-offer {
+            background: #dc2626; color: white; font-size: 0.6rem; padding: 2px 6px;
+            border-radius: 4px; font-weight: bold; text-transform: uppercase;
+            position: absolute; top: 10px; left: 10px;
+        }
+        .badge-top {
+            background: #8b5cf6; color: white; font-size: 0.6rem; padding: 2px 6px;
+            border-radius: 4px; font-weight: bold; text-transform: uppercase;
+            position: absolute; top: 10px; right: 10px;
+        }
+
+        .product-card .category { font-size: 0.62rem; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-top: 1rem; }
+        .product-card h4 { font-size: 0.85rem; margin: 0.2rem 0 0.4rem 0; color: #0f172a; line-height: 1.2; height: 2.1rem; overflow: hidden; }
+        .product-card .stock-info { font-size: 0.72rem; color: #059669; margin-bottom: 0.4rem; font-weight: 600; }
+        .product-card .stock-info.low { color: #dc2626; }
+
+        .product-card .price-container { display: flex; align-items: baseline; gap: 6px; margin-bottom: 0.6rem; }
+        .product-card .price { font-size: 1.05rem; font-weight: 800; color: #0f172a; }
+        .product-card .old-price { font-size: 0.75rem; color: #94a3b8; text-decoration: line-through; }
+
+        .btn-add {
+            background-color: #f97316; color: #ffffff; border: none; padding: 0.45rem;
+            border-radius: 6px; font-weight: bold; cursor: pointer; transition: background 0.2s;
+            font-size: 0.78rem; text-align: center;
+        }
+        .btn-add:hover { background-color: #ea580c; }
+        .btn-add:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+
+        .cart-panel-sidebar {
+            background: #ffffff; border-radius: 10px; padding: 1.1rem;
+            border: 1px solid #e2e8f0; height: fit-content; position: sticky; top: 4.5rem;
+        }
+        .cart-panel-sidebar h3 { font-size: 0.95rem; margin-bottom: 0.8rem; border-bottom: 2px solid #f1f5f9; padding-bottom: 0.4rem; color: #0f172a; }
+        .cart-items { list-style: none; max-height: 200px; overflow-y: auto; margin-bottom: 0.8rem; }
+        .cart-item {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.78rem; margin-bottom: 0.5rem; border-bottom: 1px dashed #f1f5f9; padding-bottom: 0.3rem; color: #334155;
+        }
+        .cart-summary { background: #f8fafc; padding: 0.7rem; border-radius: 6px; margin-bottom: 0.8rem; }
+        .summary-row { display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.25rem; color: #475569; }
+        .summary-row.total { font-weight: bold; font-size: 0.9rem; color: #0f172a; border-top: 1px solid #cbd5e1; padding-top: 0.35rem; margin-top: 0.35rem; }
+
+        .btn-actions { display: flex; flex-direction: column; gap: 0.4rem; }
+        .btn-checkout { background-color: #0284c7; color: white; border: none; padding: 0.55rem; border-radius: 6px; font-weight: bold; cursor: pointer; text-align: center; font-size: 0.8rem; }
+        .btn-checkout:hover { background-color: #0369a1; }
+        .btn-whatsapp { background-color: #22c55e; color: white; border: none; padding: 0.55rem; border-radius: 6px; font-weight: bold; text-align: center; text-decoration: none; display: block; font-size: 0.8rem; }
+        .btn-whatsapp:hover { background-color: #16a34a; }
+        .btn-clear { background-color: #ef4444; color: white; border: none; padding: 0.3rem; border-radius: 6px; font-size: 0.72rem; cursor: pointer; }
+
+        .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); z-index: 1100; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .modal-content { background: #ffffff; padding: 2rem; width: 90%; max-width: 420px; border-radius: 12px; position: relative; }
+        .close-btn { position: absolute; top: 12px; right: 15px; font-size: 1.2rem; cursor: pointer; color: #64748b; font-weight: bold; }
+
+        .ticket { font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; background: #fff; padding: 10px; }
+        .ticket-header { text-align: center; margin-bottom: 1rem; }
+        .ticket-header h4 { font-size: 0.95rem; margin-bottom: 2px; }
+        .ticket-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .ticket-table th, .ticket-table td { text-align: left; padding: 4px 0; border-bottom: 1px dashed #cbd5e1; font-size: 0.78rem; }
+        .admin-badge { background: #f59e0b; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <!-- PANTALLA 1: LOGIN -->
+    <div id="login-screen">
+        <div class="stage">
+            <div class="builder-container">
+                <div class="helmet"><div class="helmet-visor"></div></div>
+                <div class="head"></div>
+                <div class="torso">
+                    <div class="stripe-v1"></div>
+                    <div class="stripe-v2"></div>
+                </div>
+                <div class="arm-left"></div>
+                <div class="arm-right"></div>
+                <div class="leg-left"><div class="boot"></div></div>
+                <div class="leg-right"><div class="boot"></div></div>
+            </div>
+
+            <div class="folder-panel">
+                <div class="folder-tab">EXPEDIENTE</div>
+                <div class="touch-point"></div>
+            </div>
+
+            <div class="login-card">
+                <div class="login-header">
+                    <h1>Multiconstrucciones</h1>
+                    <p>Rio Santa S.A.C. — Acceso Ferretero</p>
+                </div>
+
+                <form onsubmit="iniciarSesionSistema(event)">
+                    <div class="form-group">
+                        <label for="username">Usuario / Correo</label>
+                        <input type="text" id="username" placeholder="Usa 'admin' para ver stock" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" placeholder="Usa '1234' para admin" required>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Ingresar a la Tienda</button>
+                </form>
+
+                <div class="footer-links">
+                    <a onclick="abrirModal('forgotModal')">¿Olvidaste tu contraseña?</a>
+                    <a onclick="abrirModal('registerModal')">Crear Cuenta</a>
+                </div>
+            </div>
+
+            <div class="hammer-icon">🔨</div>
+
+            <div class="cement-rain">
+                <span class="brick" style="left: 210px; animation-delay: 6.6s; animation-duration: 2.6s;">🧱</span>
+                <span class="brick" style="left: 250px; animation-delay: 7.6s; animation-duration: 2.9s;">🧱</span>
+                <span class="brick" style="left: 700px; animation-delay: 6.9s; animation-duration: 2.7s;">🧱</span>
+                <span class="brick" style="left: 740px; animation-delay: 7.9s; animation-duration: 3s;">🧱</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA 2: TIENDA AMPLIADA -->
+    <div id="app-screen">
+        <header class="top-navbar-main">
+            <div class="brand-logo">
+                <h1>🏗️ Río Santa</h1>
+            </div>
+            <div class="search-bar-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="input-search" placeholder="¿Buscas muebles, focos, baños, espejos o cemento?" oninput="buscarProductos(this.value)">
+            </div>
+            <div class="top-actions">
+                <a class="nav-link-top" onclick="alert('Catálogo general descargado.')">📄 Catálogos</a>
+                <div class="location-selector" title="Ubicación de entrega">
+                    📍 <span>Huaral, PE</span>
+                </div>
+                <div id="user-session-area"></div>
+            </div>
+        </header>
+
+        <div class="featured-banner-wrapper">
+            <div class="featured-banner-tag">Gran Pack Remodelación</div>
+            <div class="featured-banner-content">
+                <div class="featured-banner-info">
+                    <h4>Inodoro One Piece + Espejo LED + Lavatorio</h4>
+                    <p>Precio Online: S/ 450.00 <span style="text-decoration: line-through; color: #94a3b8; font-size:0.75rem;">S/ 520.00</span></p>
+                </div>
+                <button class="btn-submit" style="padding: 0.4rem 1rem; font-size: 0.8rem;" onclick="agregarAlCarrito(25)">Añadir Pack</button>
+            </div>
+            <div style="font-size: 1.5rem;">✨</div>
+        </div>
+
+        <div class="store-container">
+            <h2 id="current-category-title" class="category-title">Catálogo Ferretero, Baños y Muebles</h2>
+
+            <div class="quick-categories">
+                <div class="q-cat-card active" onclick="filtrarCategoria('Todos')">
+                    <div class="q-cat-icon">🏬</div>
+                    <div class="q-cat-name">Todo</div>
+                </div>
+                <div class="q-cat-card" onclick="filtrarCategoria('Baños y Sanitarios')">
+                    <div class="q-cat-icon">🚽</div>
+                    <div class="q-cat-name">Baños</div>
+                </div>
+                <div class="q-cat-card" onclick="filtrarCategoria('Espejos y Decoración')">
+                    <div class="q-cat-icon">🪞</div>
+                    <div class="q-cat-name">Espejos</div>
+                </div>
+                <div class="q-cat-card" onclick="filtrarCategoria('Muebles y Estantería')">
+                    <div class="q-cat-icon">🛋️</div>
+                    <div class="q-cat-name">Muebles</div>
+                </div>
+                <div class="q-cat-card" onclick="filtrarCategoria('Iluminación y Focos')">
+                    <div class="q-cat-icon">💡</div>
+                    <div class="q-cat-name">Iluminación</div>
+                </div>
+                <div class="q-cat-card" onclick="filtrarCategoria('Construcción')">
+                    <div class="q-cat-icon">🧱</div>
+                    <div class="q-cat-name">Construcción</div>
+                </div>
+                <div class="q-cat-card" onclick="filtrarCategoria('Herramientas')">
+                    <div class="q-cat-icon">🛠️</div>
+                    <div class="q-cat-name">Herramientas</div>
+                </div>
+            </div>
+
+            <div class="explore-styles-section">
+                <h3>Explora por estilo de hogar y obra</h3>
+                <div class="styles-grid-row">
+                    <div class="style-item-card" onclick="buscarProductos('moderno')">
+                        <div class="style-circle-img">🏙️</div>
+                        <span>Moderno Minimalista</span>
+                    </div>
+                    <div class="style-item-card" onclick="buscarProductos('baño')">
+                        <div class="style-circle-img">🚿</div>
+                        <span>Baños de Lujo</span>
+                    </div>
+                    <div class="style-item-card" onclick="buscarProductos('foco')">
+                        <div class="style-circle-img">💡</div>
+                        <span>Iluminación LED</span>
+                    </div>
+                    <div class="style-item-card" onclick="buscarProductos('mueble')">
+                        <div class="style-circle-img">🗄️</div>
+                        <span>Organización & Muebles</span>
+                    </div>
+                    <div class="style-item-card" onclick="buscarProductos('cemento')">
+                        <div class="style-circle-img">🏗️</div>
+                        <span>Obra Gruesa</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-shop-layout">
+                <div class="sidebar-filters">
+                    <h3>Filtrar productos</h3>
+                    <div class="filter-group">
+                        <h4>Categorías</h4>
+                        <ul class="filter-list">
+                            <li onclick="filtrarCategoria('Todos')">🔹 Todos</li>
+                            <li onclick="filtrarCategoria('Baños y Sanitarios')">🚽 Baños y Sanitarios</li>
+                            <li onclick="filtrarCategoria('Espejos y Decoración')">🪞 Espejos y Marcos</li>
+                            <li onclick="filtrarCategoria('Muebles y Estantería')">🛋️ Muebles y Gabinetes</li>
+                            <li onclick="filtrarCategoria('Iluminación y Focos')">💡 Focos y Luminarias</li>
+                            <li onclick="filtrarCategoria('Construcción')">🧱 Construcción</li>
+                            <li onclick="filtrarCategoria('Herramientas')">🛠️ Herramientas</li>
+                        </ul>
+                    </div>
+                    <div class="filter-group">
+                        <h4>Marcas</h4>
+                        <ul class="filter-list">
+                            <li>▪ Trébol / Vainsa</li>
+                            <li>▪ Philips / Osram</li>
+                            <li>▪ Cemento Sol</li>
+                            <li>▪ Aceros Arequipa</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="products-grid" class="products-grid"></div>
+
+                <div class="cart-panel-sidebar">
+                    <h3>🛒 Tu Carrito</h3>
+                    <ul id="cart-items" class="cart-items">
+                        <li style="color: #64748b; text-align: center; padding: 1rem 0; font-size:0.78rem;">Tu carrito está vacío</li>
+                    </ul>
+
+                    <div class="cart-summary">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">S/ 0.00</span>
+                        </div>
+                        <div class="summary-row" style="color: #16a34a;">
+                            <span>Descuento Volumen:</span>
+                            <span id="discount">S/ 0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span id="total">S/ 0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="btn-actions">
+                        <button id="btn-process" class="btn-checkout" onclick="procesarCompra()" disabled>Emitir Comprobante</button>
+                        <a id="whatsapp-btn" href="#" target="_blank" class="btn-whatsapp" style="display: none;">Pedir por WhatsApp</a>
+                        <button class="btn-clear" onclick="reiniciarCarrito()">Vaciar Carrito</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALES -->
+    <div id="forgotModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModal('forgotModal')">&times;</span>
+            <h3 style="margin-bottom: 1rem;">Recuperar Contraseña</h3>
+            <form onsubmit="event.preventDefault(); alert('Se envió un enlace de recuperación.'); cerrarModal('forgotModal');">
+                <div class="form-group"><label>Correo Electrónico</label><input type="email" placeholder="Ingresa tu correo" required></div>
+                <button type="submit" class="btn-submit">Enviar Enlace</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModal('registerModal')">&times;</span>
+            <h3 style="margin-bottom: 1rem;">Crear Cuenta de Cliente</h3>
+            <form onsubmit="event.preventDefault(); alert('¡Cuenta creada con éxito!'); cerrarModal('registerModal');">
+                <div class="form-group"><label>Usuario</label><input type="text" placeholder="Elige un usuario" required></div>
+                <div class="form-group"><label>Contraseña</label><input type="password" placeholder="••••••••" required></div>
+                <button type="submit" class="btn-submit">Registrarse</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="receiptModal" class="modal">
+        <div class="modal-content" style="max-width: 480px;">
+            <div class="ticket">
+                <div class="ticket-header">
+                    <h4>MULTICONSTRUCCIONES RÍO SANTA S.A.C.</h4>
+                    <p>RUC: 20601234567</p>
+                    <p>Huaral, Perú</p>
+                    <p id="ticket-fecha">Fecha: --/--/----</p>
+                    <p><b>COMPROBANTE ELECTRÓNICO</b></p>
+                    <p>BOLETA DE VENTA - B001-000453</p>
+                </div>
+                <table class="ticket-table">
+                    <thead>
+                        <tr>
+                            <th>Cant. / Descripción</th>
+                            <th>P.Unit</th>
+                            <th>Importe</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ticket-items"></tbody>
+                </table>
+                <div style="font-size: 0.78rem; border-top: 1px dashed #cbd5e1; padding-top: 5px;">
+                    <div style="display:flex; justify-content:space-between;"><span>Subtotal:</span><span id="t-sub">S/ 0.00</span></div>
+                    <div style="display:flex; justify-content:space-between; color:#16a34a;"><span>Descuento:</span><span id="t-desc">S/ 0.00</span></div>
+                    <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:0.85rem; margin-top:4px;"><span>TOTAL A PAGAR:</span><span id="t-tot">S/ 0.00</span></div>
+                </div>
+                <p style="text-align: center; margin-top: 1rem; font-size: 0.72rem; color: #64748b;">¡Gracias por su compra en Multiconstrucciones Río Santa!</p>
+            </div>
+            <button onclick="cerrarModal('receiptModal')" class="btn-submit" style="margin-top: 1rem;">Aceptar y Nueva Venta</button>
+        </div>
+    </div>
+
+    <script>
+        let productos = [
+            // Baños y Sanitarios
+            { id: 20, nombre: "Inodoro One Piece Trébol con Sistema Dual", categoria: "Baños y Sanitarios", precio: 380.00, stock: 15, oferta: false, top: true },
+            { id: 21, nombre: "Lavatorio de Loza con Pedestal Blanco", categoria: "Baños y Sanitarios", precio: 125.00, stock: 20, oferta: false, top: false },
+            { id: 22, nombre: "Grifería Monocomando para Lavatorio Cromo", categoria: "Baños y Sanitarios", precio: 95.00, stock: 25, oferta: true, precioOriginal: 115.00, top: true },
+            { id: 23, nombre: "Ducha Térmica Electric Shower 4 Temp", categoria: "Baños y Sanitarios", precio: 140.00, stock: 30, oferta: false, top: false },
+            { id: 24, nombre: "Tina de Baño Acrílica 1.40m Blanca", categoria: "Baños y Sanitarios", precio: 650.00, stock: 5, oferta: false, top: false },
+            { id: 25, nombre: "Pack Combo Inodoro + Lavatorio + Espejo", categoria: "Baños y Sanitarios", precio: 450.00, stock: 10, oferta: true, precioOriginal: 520.00, top: true },
+
+            // Espejos y Decoración
+            { id: 26, nombre: "Espejo Redondo con Luz LED Touch 60cm", categoria: "Espejos y Decoración", precio: 180.00, stock: 12, oferta: true, precioOriginal: 210.00, top: true },
+            { id: 27, nombre: "Espejo Rectangular con Marco de Aluminio Negro", categoria: "Espejos y Decoración", precio: 150.00, stock: 18, oferta: false, top: false },
+            { id: 28, nombre: "Espejo Organizador de Pared para Joyas/Baño", categoria: "Espejos y Decoración", precio: 220.00, stock: 8, oferta: false, top: false },
+
+            // Muebles y Estantería
+            { id: 29, nombre: "Mueble Base para Lavatorio de Baño Melamine", categoria: "Muebles y Estantería", precio: 290.00, stock: 10, oferta: false, top: true },
+            { id: 30, nombre: "Estante Metálico Modular 5 Niveles Carga Pesada", categoria: "Muebles y Estantería", precio: 165.00, stock: 22, oferta: true, precioOriginal: 190.00, top: true },
+            { id: 31, nombre: "Gabinete Aéreo de Cocina Melamine 1.20m", categoria: "Muebles y Estantería", precio: 340.00, stock: 7, oferta: false, top: false },
+            { id: 32, nombre: "Escritorio de Oficina Minimalista en L", categoria: "Muebles y Estantería", precio: 280.00, stock: 14, oferta: false, top: false },
+
+            // Iluminación y Focos
+            { id: 33, nombre: "Foco LED Ahorrador 12W Luz Blanca Philips", categoria: "Iluminación y Focos", precio: 9.50, stock: 150, oferta: false, top: true },
+            { id: 34, nombre: "Foco LED Dicroico GU10 7W Luz Cálida", categoria: "Iluminación y Focos", precio: 12.00, stock: 90, oferta: false, top: false },
+            { id: 35, nombre: "Panel LED Redondo Empotrable 18W", categoria: "Iluminación y Focos", precio: 28.00, stock: 60, oferta: true, precioOriginal: 35.00, top: true },
+            { id: 36, nombre: "Reflector LED Exterior 50W IP66 Luz Blanca", categoria: "Iluminación y Focos", precio: 55.00, stock: 25, oferta: false, top: false },
+            { id: 37, nombre: "Tira LED 5 Metros RGB con Control Remoto", categoria: "Iluminación y Focos", precio: 38.00, stock: 40, oferta: false, top: false },
+
+            // Construcción y Ferretería Base
+            { id: 1, nombre: "Cemento Sol x 42.5kg", categoria: "Construcción", precio: 28.50, stock: 150, oferta: false, top: true },
+            { id: 2, nombre: "Fierro Corrugado 1/2\" Aceros Arequipa", categoria: "Construcción", precio: 34.00, stock: 80, oferta: false, top: true },
+            { id: 3, nombre: "Ladrillo King Kong 18H", categoria: "Construcción", precio: 1.20, stock: 1200, oferta: false, top: false },
+            { id: 13, nombre: "Martillo de Carpintero Profesional", categoria: "Herramientas", precio: 25.00, stock: 18, oferta: false, top: true },
+            { id: 14, nombre: "Juego de Llaves Mixtas x 8pz", categoria: "Herramientas", precio: 55.00, stock: 12, oferta: false, top: false }
+        ];
+
+        let carrito = [];
+        let usuarioActual = null;
+        let categoriaSeleccionada = 'Todos';
+        let textoBusqueda = '';
+
+        function iniciarSesionSistema(e) {
+            e.preventDefault();
+            let u = document.getElementById('username').value.trim();
+            let p = document.getElementById('password').value.trim();
+
+            if (u === 'admin' && p === '1234') {
+                usuarioActual = 'admin';
+                document.getElementById('user-session-area').innerHTML = `
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <span class="user-account-btn">👤 Admin <span class="admin-badge">STOCK</span></span>
+                        <button onclick="cerrarSesion()" style="background:#ef4444; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:0.7rem;">Salir</button>
+                    </div>
+                `;
+            } else {
+                usuarioActual = 'cliente';
+                document.getElementById('user-session-area').innerHTML = `
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <span class="user-account-btn">👤 Mi Cuenta</span>
+                        <button onclick="cerrarSesion()" style="background:#ef4444; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:0.7rem;">Salir</button>
+                    </div>
+                `;
+            }
+
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app-screen').style.display = 'flex';
+            renderizarProductos();
+        }
+
+        function cerrarSesion() {
+            usuarioActual = null;
+            document.getElementById('app-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        function filtrarCategoria(cat) {
+            categoriaSeleccionada = cat;
+            document.getElementById('current-category-title').textContent = cat === 'Todos' ? 'Catálogo Ferretero, Baños y Muebles' : cat;
+            
+            document.querySelectorAll('.q-cat-card').forEach(card => {
+                card.classList.remove('active');
+                if(card.textContent.includes(cat) || (cat === 'Todos' && card.textContent.includes('Todo'))) {
+                    card.classList.add('active');
+                }
+            });
+            renderizarProductos();
+        }
+
+        function buscarProductos(val) {
+            textoBusqueda = val.toLowerCase();
+            renderizarProductos();
+        }
+
+        function renderizarProductos() {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+
+            let filtrados = productos.filter(p => {
+                let cumpleCat = true;
+                if (categoriaSeleccionada !== 'Todos') cumpleCat = p.categoria === categoriaSeleccionada;
+                let cumpleBusqueda = p.nombre.toLowerCase().includes(textoBusqueda) || p.categoria.toLowerCase().includes(textoBusqueda);
+                return cumpleCat && cumpleBusqueda;
+            });
+
+            if (filtrados.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#64748b; padding: 2rem;">No se encontraron productos disponibles.</p>';
+                return;
+            }
+
+            filtrados.forEach(p => {
+                let card = document.createElement('div');
+                card.className = 'product-card';
+                
+                let stockHtml = usuarioActual === 'admin' 
+                    ? `<div class="stock-info ${p.stock < 10 ? 'low' : ''}">📦 Almacén: ${p.stock} un.</div>`
+                    : `<div class="stock-info">✔ Stock disponible</div>`;
+
+                let badgeHtml = p.oferta ? `<div class="badge-offer">Oferta</div>` : '';
+                let topHtml = p.top ? `<div class="badge-top">Top Ventas</div>` : '';
+
+                let precioHtml = p.oferta ? `
+                    <div class="price-container">
+                        <span class="price">S/ ${p.precio.toFixed(2)}</span>
+                        <span class="old-price">S/ ${p.precioOriginal.toFixed(2)}</span>
+                    </div>
+                ` : `<div class="price-container"><span class="price">S/ ${p.precio.toFixed(2)}</span></div>`;
+
+                card.innerHTML = `
+                    ${badgeHtml}
+                    ${topHtml}
+                    <div>
+                        <span class="category">${p.categoria}</span>
+                        <h4>${p.nombre}</h4>
+                        ${stockHtml}
+                        ${precioHtml}
+                    </div>
+                    <button class="btn-add" onclick="agregarAlCarrito(${p.id})" ${p.stock <= 0 ? 'disabled' : ''}>
+                        ${p.stock > 0 ? 'Agregar' : 'Agotado'}
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function agregarAlCarrito(id) {
+            let producto = productos.find(p => p.id === id);
+            if (!producto || producto.stock <= 0) return;
+
+            let itemEnCarrito = carrito.find(item => item.id === id);
+            if (itemEnCarrito) {
+                if (itemEnCarrito.cantidad < producto.stock) {
+                    itemEnCarrito.cantidad++;
+                } else {
+                    alert('Stock máximo alcanzado.');
+                    return;
+                }
+            } else {
+                carrito.push({ id: producto.id, nombre: producto.nombre, precio: producto.precio, cantidad: 1 });
+            }
+            actualizarCarrito();
+        }
+
+        function actualizarCarrito() {
+            const listaItems = document.getElementById('cart-items');
+            const spanSubtotal = document.getElementById('subtotal');
+            const spanDiscount = document.getElementById('discount');
+            const spanTotal = document.getElementById('total');
+            const btnWhatsapp = document.getElementById('whatsapp-btn');
+            const btnProcess = document.getElementById('btn-process');
+
+            listaItems.innerHTML = '';
+
+            if (carrito.length === 0) {
+                listaItems.innerHTML = '<li style="color: #64748b; text-align: center; padding: 1rem 0; font-size:0.78rem;">Tu carrito está vacío</li>';
+                spanSubtotal.textContent = 'S/ 0.00';
+                spanDiscount.textContent = 'S/ 0.00';
+                spanTotal.textContent = 'S/ 0.00';
+                btnWhatsapp.style.display = 'none';
+                btnProcess.disabled = true;
+                return;
+            }
+
+            let subtotal = 0;
+            let totalUnidades = 0;
+
+            carrito.forEach(item => {
+                let subtotalItem = item.precio * item.cantidad;
+                subtotal += subtotalItem;
+                totalUnidades += item.cantidad;
+
+                let li = document.createElement('li');
+                li.className = 'cart-item';
+                li.innerHTML = `
+                    <span>${item.nombre} (x${item.cantidad})</span>
+                    <b>S/ ${subtotalItem.toFixed(2)}</b>
+                `;
+                listaItems.appendChild(li);
+            });
+
+            let descuento = totalUnidades >= 10 ? subtotal * 0.10 : (totalUnidades >= 5 ? subtotal * 0.05 : 0);
+            let total = subtotal - descuento;
+
+            spanSubtotal.textContent = `S/ ${subtotal.toFixed(2)}`;
+            spanDiscount.textContent = `- S/ ${descuento.toFixed(2)}`;
+            spanTotal.textContent = `S/ ${total.toFixed(2)}`;
+            btnWhatsapp.style.display = 'block';
+            btnProcess.disabled = false;
+
+            let mensaje = `Hola, deseo realizar este pedido en *Multiconstrucciones Río Santa S.A.C.*:%0A`;
+            carrito.forEach(i => { mensaje += `- ${i.nombre} (x${i.cantidad}): S/ ${(i.precio * i.cantidad).toFixed(2)}%0A`; });
+            mensaje += `%0A*TOTAL:* S/ ${total.toFixed(2)}`;
+            btnWhatsapp.href = `https://wa.me/51900000000?text=${mensaje}`;
+        }
+
+        function reiniciarCarrito() {
+            carrito = [];
+            actualizarCarrito();
+        }   
+
+        function procesarCompra() {
+            if (carrito.length === 0) return;
+
+            carrito.forEach(itemCarrito => {
+                let prod = productos.find(p => p.id === itemCarrito.id);
+                if (prod) prod.stock -= itemCarrito.cantidad;
+            });
+
+            document.getElementById('ticket-fecha').textContent = `Fecha: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`;
+            const tBody = document.getElementById('ticket-items');
+            tBody.innerHTML = '';
+
+            let subtotal = 0;
+            carrito.forEach(i => {
+                let subItem = i.precio * i.cantidad;
+                subtotal += subItem;
+                let tr = document.createElement('tr');
+                tr.innerHTML = `<td>${i.cantidad}x ${i.nombre}</td><td>S/${i.precio.toFixed(2)}</td><td>S/${subItem.toFixed(2)}</td>`;
+                tBody.appendChild(tr);
+            });
+
+            let totalUnidades = carrito.reduce((acc, curr) => acc + curr.cantidad, 0);
+            let descuento = totalUnidades >= 10 ? subtotal * 0.10 : (totalUnidades >= 5 ? subtotal * 0.05 : 0);
+            let total = subtotal - descuento;
+
+            document.getElementById('t-sub').textContent = `S/ ${subtotal.toFixed(2)}`;
+            document.getElementById('t-desc').textContent = `- S/ ${descuento.toFixed(2)}`;
+            document.getElementById('t-tot').textContent = `S/ ${total.toFixed(2)}`;
+
+            document.getElementById('receiptModal').style.display = 'flex';
+            renderizarProductos();
+            carrito = [];
+            actualizarCarrito();
+        }
+
+        function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
+    </script>
+</body>
+</html>
